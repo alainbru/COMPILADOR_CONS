@@ -195,7 +195,7 @@
     </div>
   </section>
 
-  <script>
+<script>
     const examples = {
       posturas: `escenario PosturasTiticaca {
     actor ComunidadLago {
@@ -293,7 +293,8 @@ simular Demo {
       renderSummary({ status: 'error', summary: 'Procesando...', details: ['Esperando respuesta del analizador...'] });
 
       try {
-        const response = await fetch('http://localhost:3000/compile', {
+        // Petición a la API alojada en Render
+        const response = await fetch('https://compilador-cons-1.onrender.com/compile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code })
@@ -310,7 +311,7 @@ simular Demo {
         output.textContent = data.output || 'Análisis completado sin salida.';
         renderSummary(data);
       } catch (error) {
-        output.textContent = `No se pudo contactar con la API. Asegúrate de iniciar el servidor con: node server.js\n${error.message}`;
+        output.textContent = `No se pudo contactar con la API en Render.\nDetalle: ${error.message}`;
         renderSummary({
           status: 'error',
           summary: 'No se pudo conectar con el servidor del compilador.',
