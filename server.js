@@ -3,13 +3,7 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
-
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
-
+const crypto = require('crypto'); // Módulo nativo para UUIDs
 
 const app = express();
 app.use(cors());
@@ -61,22 +55,41 @@ app.post('/compile', (req, res) => {
         fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    const inputFile = path.join(outputDir, 'codigo_entrada.csl');
+    // 1. Generar nombre único con UUID para evitar colisiones entre peticiones
+    const uniqueId = crypto.randomUUID();
+    const inputFile = path.join(outputDir, `codigo_${uniqueId}.csl`);
     const normalizedCode = code.replace(/^\uFEFF/, '');
     fs.writeFileSync(inputFile, normalizedCode, 'utf8');
+
+    // Función auxiliar para eliminar el archivo temporal
+    const cleanupFile = () => {
+        if (fs.existsSync(inputFile)) {
+            fs.unlink(inputFile, (err) => {
+                if (err) console.error(`Error al eliminar ${inputFile}:`, err);
+            });
+        }
+    };
 
     const exeName = process.platform === 'win32' ? 'AnalizadorCLS.exe' : 'AnalizadorCLS';
     const exePath = path.join(outputDir, exeName);
 
     if (!fs.existsSync(exePath)) {
+        cleanupFile();
         return res.status(500).json(buildCompilationResponse({
             success: false,
-            error: `No se encontró el ejecutable del analizador en ${exePath}. Compílalo primero con: g++ AnalizadorCLS.cpp -o output/AnalizadorCLS.exe`,
+            error: `No se encontró el ejecutable del analizador en ${exePath}.`,
             code
         }));
     }
 
-    const child = spawn(exePath, [inputFile], { cwd: __dirname, shell: false });
+    // 2. Configurar el proceso con un tiempo límite de 5000 ms (5 segundos)
+    const EXEC_TIMEOUT_MS = 5000;
+    const child = spawn(exePath, [inputFile], { 
+        cwd: __dirname, 
+        shell: false,
+        timeout: EXEC_TIMEOUT_MS
+    });
+
     let stdout = '';
     let stderr = '';
 
@@ -89,14 +102,27 @@ app.post('/compile', (req, res) => {
     });
 
     child.on('error', (err) => {
+        cleanupFile();
         res.status(500).json(buildCompilationResponse({
             success: false,
             error: `No se pudo ejecutar el analizador: ${err.message}`,
-            code: code
+            code
         }));
     });
 
-    child.on('close', (exitCode) => {
+    child.on('close', (exitCode, signal) => {
+        // Asegurar la eliminación del archivo temporal siempre que finalice el proceso
+        cleanupFile();
+
+        // Detectar si el proceso fue forzado a terminar por exceder el tiempo
+        if (signal === 'SIGTERM') {
+            return res.status(508).json(buildCompilationResponse({
+                success: false,
+                error: `Tiempo límite excedido (${EXEC_TIMEOUT_MS / 1000}s). Posible bucle infinito en el código enviando.`,
+                code
+            }));
+        }
+
         if (exitCode !== 0) {
             return res.status(500).json(buildCompilationResponse({
                 success: false,
@@ -113,8 +139,7 @@ app.post('/compile', (req, res) => {
     });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor API Node.js corriendo en http://localhost:${PORT}`);
-    console.log(`Compilador listo para usar con: ${path.join(__dirname, 'output', process.platform === 'win32' ? 'AnalizadorCLS.exe' : 'AnalizadorCLS')}`);
-});
+    console.log(`🚀 Servidor API corriendo en el puerto ${PORT}`);
+})
