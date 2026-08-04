@@ -3,12 +3,23 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
-const crypto = require('crypto'); // Módulo nativo para UUIDs
+const crypto = require('crypto');
 
 const app = express();
+
+// 1. Middlewares globales
 app.use(cors());
 app.use(express.json());
 
+// Servir archivos estáticos de la carpeta del proyecto (CSS, JS, imágenes)
+app.use(express.static(__dirname));
+
+// 2. Ruta principal (Servir el HTML)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Principal.html'));
+});
+
+// Helper para armar respuestas
 function buildCompilationResponse({ success, output, error, code }) {
     const rawOutput = (output || error || '').trim();
     const lineCount = code ? code.split(/\r?\n/).filter(Boolean).length : 0;
@@ -39,6 +50,7 @@ function buildCompilationResponse({ success, output, error, code }) {
     };
 }
 
+// 3. Ruta de compilación
 app.post('/compile', (req, res) => {
     const { code } = req.body;
 
@@ -55,13 +67,13 @@ app.post('/compile', (req, res) => {
         fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // 1. Generar nombre único con UUID para evitar colisiones entre peticiones
+    // Nombre único con UUID para el archivo temporal
     const uniqueId = crypto.randomUUID();
     const inputFile = path.join(outputDir, `codigo_${uniqueId}.csl`);
     const normalizedCode = code.replace(/^\uFEFF/, '');
     fs.writeFileSync(inputFile, normalizedCode, 'utf8');
 
-    // Función auxiliar para eliminar el archivo temporal
+    // Función para limpiar archivos temporales
     const cleanupFile = () => {
         if (fs.existsSync(inputFile)) {
             fs.unlink(inputFile, (err) => {
@@ -82,7 +94,7 @@ app.post('/compile', (req, res) => {
         }));
     }
 
-    // 2. Configurar el proceso con un tiempo límite de 5000 ms (5 segundos)
+    // Proceso con timeout de 5 segundos
     const EXEC_TIMEOUT_MS = 5000;
     const child = spawn(exePath, [inputFile], { 
         cwd: __dirname, 
@@ -111,10 +123,8 @@ app.post('/compile', (req, res) => {
     });
 
     child.on('close', (exitCode, signal) => {
-        // Asegurar la eliminación del archivo temporal siempre que finalice el proceso
         cleanupFile();
 
-        // Detectar si el proceso fue forzado a terminar por exceder el tiempo
         if (signal === 'SIGTERM') {
             return res.status(508).json(buildCompilationResponse({
                 success: false,
@@ -139,7 +149,8 @@ app.post('/compile', (req, res) => {
     });
 });
 
+// 4. Iniciar el servidor (siempre al final)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor API corriendo en el puerto ${PORT}`);
-})
+});
