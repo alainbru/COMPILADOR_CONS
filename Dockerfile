@@ -1,7 +1,7 @@
-# 1. Imagen base oficial de Node.js en Debian
+# 1. Imagen base con Node.js
 FROM node:20-bullseye
 
-# 2. Instalamos el compilador de C++ (g++)
+# 2. Instalar compilador de C++ (g++)
 RUN apt-get update && \
     apt-get install -y build-essential && \
     rm -rf /var/lib/apt/lists/*
@@ -9,21 +9,18 @@ RUN apt-get update && \
 # 3. Directorio de trabajo
 WORKDIR /app
 
-# 4. Copiamos archivos de dependencias
+# 4. Copiar e instalar dependencias de Node
 COPY package*.json ./
-
-# 5. Instalamos dependencias de Node.js
 RUN npm install
 
-# 6. Copiamos todo el código fuente al contenedor
+# 5. Copiar el código fuente
 COPY . .
 
-# 7. Creamos la carpeta 'output' y compilamos el C++ dentro de ella
-# tal como lo espera tu server.js
-RUN mkdir -p output && g++ AnalizadorCLS.cpp -o output/AnalizadorCLS
+# 6. Crear la carpeta output y compilar C++ con el nombre exacto que espera server.js
+RUN mkdir -p output && g++ -o output/AnalizadorCLS AnalizadorCLS.cpp
 
-# 8. Exponemos el puerto (Render usará process.env.PORT automáticamente)
+# 7. Puerto del servicio
 EXPOSE 3000
 
-# 9. Iniciamos la API
+# 8. Iniciar la API
 CMD ["node", "server.js"]
