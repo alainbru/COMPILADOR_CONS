@@ -1,0 +1,11 @@
+# Carpetas y todo su contenido interno
+node_modules/
+output/
+
+# Archivos compilados o ejecutables de C++ (opcional pero recomendado)
+*.exe
+*.out
+*.o
+
+# Logs de Node / npm (opcional)
+npm-debug.log*

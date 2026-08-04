@@ -1,0 +1,270 @@
+// Ejemplos de prueba para el lenguaje de simulación de conflictos socioambientales lago titicaca
+escenario PosturasTiticaca {
+    actor ComunidadLago { 
+        tipo = "COMUNIDAD"; 
+        postura = 90;
+        poder = 0.6;
+    }
+    actor EmpresaTuristica { 
+        tipo = "PRIVADO"; 
+        postura = 20;
+        poder = 0.8;
+    }
+}
+simular Simulacion_01 {
+    escenario = PosturasTiticaca;
+    variable nivel_riesgo = 0;
+    calcular(nivel_riesgo, conflicto);
+    cuando (nivel_riesgo > 50) entonces { 
+        alerta("Alto_Conflicto"); 
+    }
+}
+
+// 2. Simulación Gestión Minera (Uso de operador +)
+escenario ConflictoMinero {
+    actor Mineros { 
+        tipo = "PRIVADO"; 
+        poder = 0.8; 
+    }
+    actor Estado { 
+        tipo = "ESTATAL"; 
+        poder = 0.9; 
+    }
+}
+simular Simulacion_02 {
+    escenario = ConflictoMinero;
+    cuando (Estado.poder > 0.5) entonces { 
+        Estado.poder = Estado.poder + 0.1;
+        registrar(alerta, "Intervencion"); 
+    }
+}
+
+// 3. Simulación Dialogo Ambiental (Uso de nueva métrica 'acuerdo')
+escenario MesaCoata {
+    actor Frente { 
+        tipo = "COMUNIDAD"; 
+        interes = 0.9; 
+        flexible = true;
+    }
+    negociacion Dialogo { 
+        parte = [Frente]; 
+        umbral = 0.8; 
+    }
+}
+simular Simulacion_03 {
+    escenario = MesaCoata;
+    variable prob_exito = 0;
+    calcular(prob_exito, acuerdo);
+    cuando (prob_exito >= 0.8) entonces { 
+        registrar(estado, "Exito"); 
+    }
+}
+
+// 4. Simulación Saneamiento (Uso de operador -)
+variable presupuesto = 50000;
+variable prioridad = 5;
+escenario PlanSaneamiento {
+    actor Mun { 
+        tipo = "ESTATAL"; 
+    }
+}
+simular Simulacion_04 {
+    escenario = PlanSaneamiento;
+    cuando (presupuesto < 10000) entonces { 
+        prioridad = prioridad - 1; 
+    }
+}
+
+// 5. Simulación Red Influencia (Uso de operador *)
+escenario RedInfluencia {
+    actor Lider { 
+        tipo = "ESTATAL"; 
+        poder = 0.9; 
+    }
+    red Influencia { 
+        nodo = Lider; 
+        influencia = 0.90; 
+    }
+}
+simular Simulacion_05 {
+    escenario = RedInfluencia;
+    cuando (Lider.poder > 0.8) entonces {
+        Influencia.influencia = Influencia.influencia * 1.1;
+        evaluar(Influencia.influencia > 0.95);
+    }
+}
+
+// 6. Simulación Protesta
+escenario EstallidoCoata {
+    actor Frente { 
+        tipo = "COMUNIDAD"; 
+    }
+    evento Bloqueo { 
+        tiempo = 24; 
+        valor = 100; 
+    }
+}
+simular Simulacion_06 {
+    escenario = EstallidoCoata;
+    cuando (Frente.tipo == "COMUNIDAD") entonces { 
+        disparar(Bloqueo); 
+    }
+}
+
+// 7. Simulación Coalición (Uso de nueva métrica 'consenso')
+escenario AlianzaAmbiental {
+    actor ONG { 
+        tipo = "PRIVADO"; 
+        postura = 80;
+    }
+    actor Pescadores {
+        tipo = "COMUNIDAD";
+        postura = 85;
+    }
+    coalicion Union { 
+        miembro = [ONG, Pescadores]; 
+        poder = 0.8; 
+    }
+}
+simular Simulacion_07 {
+    escenario = AlianzaAmbiental;
+    variable nivel_consenso = 0;
+    calcular(nivel_consenso, consenso);
+    cuando (nivel_consenso > 80) entonces {
+        establecer(tendencia, true);
+    }
+}
+
+// 8. Simulación Calidad
+variable metales = 60;
+escenario CalidadAgua {
+    actor Autoridad { poder = 0.5; }
+}
+simular Simulacion_08 {
+    escenario = CalidadAgua;
+    cuando (metales > 50) entonces { 
+        metales = metales + 15;
+        alerta("Critica"); 
+    }
+}
+
+// 9. Simulación Desastre (Variable renombrada a 'nivel_crisis')
+variable nivel_crisis = 100;
+escenario DesastreCohana {
+    actor Afectados { prioridad = 10; }
+}
+simular Simulacion_09 {
+    escenario = DesastreCohana;
+    cuando (nivel_crisis == 100) entonces { 
+        salida = true; 
+    }
+}
+
+// 10. Simulación Consenso 
+escenario ConsensoIndustrial {
+    actor Ind { poder = 0.6; flexible = true; }
+    actor Gob { poder = 0.8; flexible = true; }
+    negociacion Acuerdo { 
+        parte = [Ind, Gob]; 
+        umbral = 0.9; 
+    }
+}
+simular Simulacion_10 {
+    escenario = ConsensoIndustrial;
+    variable viabilidad = 0;
+    calcular(viabilidad, acuerdo);
+    cuando (viabilidad > 0.5) entonces {
+        registrar(estado, "Iniciado");
+    }
+}
+
+// 11. Simulación Compleja: Gestión Integral de Cuenca
+escenario CuencaTiticaca {
+    actor MINAM { tipo = "ESTATAL"; poder = 0.9; }
+    actor Pescadores { tipo = "COMUNIDAD"; poder = 0.4; }
+    actor Truchicolas { tipo = "PRIVADO"; poder = 0.5; }
+    coalicion UnionPescadores {
+        miembro = [Pescadores, Truchicolas];
+        poder = 0.6;
+    }
+}
+simular Simulacion_11 {
+    escenario = CuencaTiticaca;
+    cuando (UnionPescadores.poder > 0.5) entonces { 
+        registrar(alerta, "Conflicto_Social"); 
+        MINAM.poder = MINAM.poder - 0.1; 
+    }
+}
+
+// 12. Simulación: Red de Saneamiento y EPS (Uso de operador / y +)
+escenario RedSaneamiento {
+    actor EPS_Seda { tipo = "ESTATAL"; poder = 0.7; }
+    actor Municipio { tipo = "ESTATAL"; poder = 0.8; }
+    red Infraestructura {
+        nodo = Municipio;
+        miembro = EPS_Seda;
+        influencia = 0.9;
+    }
+}
+simular Simulacion_12 {
+    escenario = RedSaneamiento;
+    cuando (Infraestructura.influencia > 0.8) entonces {
+        EPS_Seda.poder = EPS_Seda.poder + (Municipio.poder / 2);
+        establecer(tendencia, true);
+    }
+}
+
+// 13. Simulación: Crisis por Metales Pesados
+variable metales_toxicos = 85;
+escenario CrisisMinera {
+    actor EmpresaX { tipo = "PRIVADO"; interes = 0.2; }
+    actor SaludPublica { tipo = "ESTATAL"; interes = 0.9; }
+}
+simular Simulacion_13 {
+    escenario = CrisisMinera;
+    cuando (metales_toxicos > 80) entonces { 
+        alerta("Emergencia_Sanitaria"); 
+        SaludPublica.interes = SaludPublica.interes + 0.1; 
+    }
+}
+
+// 14. Simulación: Negociación Multilateral
+escenario PactoRegional {
+    actor Gobernador { tipo = "ESTATAL"; flexible = false; }
+    actor SociedadCivil { tipo = "COMUNIDAD"; flexible = true; }
+    actor EmpresaMinera { tipo = "PRIVADO"; flexible = false; }
+    negociacion MesaDialogo {
+        parte = [Gobernador, SociedadCivil, EmpresaMinera];
+        umbral = 0.95;
+    }
+}
+simular Simulacion_14 {
+    escenario = PactoRegional;
+    variable chance_exito = 0;
+    calcular(chance_exito, acuerdo);
+    cuando (chance_exito < 0.5) entonces { 
+        registrar(estado, "Falla_Negociacion"); 
+    }
+}
+
+// 15. Simulación: Sistema Dinámico Total
+variable sistema_estres = 40;
+escenario SistemaComplejo {
+    actor ActorA { poder = 0.5; postura = 10; }
+    actor ActorB { poder = 0.7; postura = 90; }
+    regla ControlGlobal {
+        cuando (sistema_estres > 70) entonces { 
+            ActorA.poder = ActorA.poder - 0.2; 
+        }
+    }
+}
+simular Simulacion_Total {
+    escenario = SistemaComplejo;
+    variable nivel_actual = 0;
+    calcular(nivel_actual, conflicto);
+    cuando (nivel_actual > 50) entonces { 
+        sistema_estres = sistema_estres + 20;
+        disparar(ControlGlobal); 
+        registrar(estado, "Estabilizando"); 
+    }
+}
