@@ -294,7 +294,7 @@ simular Demo {
 
       try {
         // Petición a la API alojada en Render
-        const response = await fetch('https://compilador-cons-1.onrender.com/compile', {
+        const response = await fetch('/compile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code })
