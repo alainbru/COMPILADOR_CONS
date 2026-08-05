@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConsensusLang</title>
+  <!-- CDN Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- CDN Chart.js (graficas de linea y barras) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'csl-dark': '#0f292d',
+            'csl-card': '#16383e',
+            'csl-light': '#b5c4c1',
+            'csl-accent': '#c25a2b',
+            'csl-border': '#2d535a',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-csl-light text-csl-dark font-sans antialiased">
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 bg-csl-light border-b border-gray-400/30 px-8 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-6 h-6 bg-csl-dark rounded-md"></div>
+      <span class="font-bold text-xl text-csl-dark">ConsensusLang</span>
+    </div>
+    <nav class="hidden md:flex space-x-8 text-sm font-medium text-slate-700">
+      <a href="#sintaxis" class="hover:text-csl-dark transition">Sintaxis</a>
+      <a href="#conceptos" class="hover:text-csl-dark transition">Conceptos</a>
+      <a href="#playground" class="hover:text-csl-dark transition">Playground</a>
+      <a href="#equipo" class="hover:text-csl-dark transition">Equipo</a>
+    </nav>
+    <a href="#playground" class="border border-csl-dark text-csl-dark font-medium px-4 py-2 rounded-lg text-sm hover:bg-csl-dark hover:text-white transition">
+      Probar el compilador
+    </a>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="bg-gradient-to-b from-csl-light via-csl-dark to-csl-dark text-white px-6 py-20 text-center flex flex-col items-center">
+    <div class="inline-flex items-center bg-csl-card text-xs text-orange-300 px-3 py-1 rounded-full mb-8 border border-csl-border">
+      <span class="w-2 h-2 rounded-full bg-orange-400 mr-2"></span>
+      DSL para simulación de conflictos socioambientales
+    </div>
+    
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight tracking-tight">
+      Modela el conflicto.<br>Simula el consenso.
+    </h1>
+    
+    <p class="max-w-3xl text-gray-300 text-lg mb-10 leading-relaxed">
+      ConsensusLang (CSL) es un lenguaje específico de dominio para describir actores, escenarios y negociaciones, y simular cómo evolucionan conflictos socioambientales como el del Lago Titicaca.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4">
+      <a href="#playground" class="bg-csl-accent hover:bg-orange-700 text-white font-medium px-6 py-3 rounded-lg shadow-lg flex items-center justify-center transition">
+        Ejecutar el compilador &rarr;
+      </a>
+      <a href="#sintaxis" class="border border-csl-border bg-csl-card/50 hover:bg-csl-card text-white font-medium px-6 py-3 rounded-lg transition">
+        Ver la sintaxis
+      </a>
+    </div>
+  </section>
+
+  <!-- SECCIÓN SINTAXIS / CASO REAL -->
+  <section id="sintaxis" class="bg-csl-light py-20 px-8 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <span class="text-xs font-bold tracking-wider text-csl-accent uppercase">Caso Real · Lago Titicaca</span>
+        <h2 class="text-4xl font-extrabold text-csl-dark mt-2 mb-6 leading-snug">
+          Actores, escenarios y reglas de decisión
+        </h2>
+        <p class="text-slate-600 leading-relaxed text-lg">
+          Define actores con su tipo (comunidad, privado, estatal), su postura y su poder de negociación. Luego describe reglas cuando / entonces que disparan alertas o acciones automáticamente al simular.
+        </p>
+      </div>
+
+      <!-- Preview de Código -->
+      <div class="bg-csl-dark p-6 rounded-2xl shadow-2xl font-mono text-xs leading-relaxed border border-csl-border text-teal-200">
+        <p class="text-slate-500 mb-2">// Ejemplo real del proyecto</p>
+        <p><span class="text-teal-400 font-semibold">escenario</span> PosturasTiticaca {</p>
+        <p class="pl-4"><span class="text-teal-400 font-semibold">actor</span> ComunidadLago { tipo = <span class="text-orange-300">"COMUNIDAD"</span>; postura = <span class="text-orange-300">90</span>; poder = <span class="text-orange-300">0.6</span>; }</p>
+        <p class="pl-4"><span class="text-teal-400 font-semibold">actor</span> EmpresaTuristica { tipo = <span class="text-orange-300">"PRIVADO"</span>; postura = <span class="text-orange-300">20</span>; poder = <span class="text-orange-300">0.8</span>; }</p>
+        <p>}</p>
+        <p><span class="text-teal-400 font-semibold">simular</span> Simulacion_01 {</p>
+        <p class="pl-4">escenario = PosturasTiticaca;</p>
+        <p class="pl-4"><span class="text-teal-400 font-semibold">variable</span> nivel_riesgo = <span class="text-orange-300">0</span>;</p>
+        <p class="pl-4">calcular(nivel_riesgo, conflicto);</p>
+        <p class="pl-4"><span class="text-teal-400 font-semibold">cuando</span> (nivel_riesgo &gt; <span class="text-orange-300">50</span>) <span class="text-teal-400 font-semibold">entonces</span> {</p>
+        <p class="pl-8">alerta(<span class="text-orange-300">"Alto_Conflicto"</span>);</p>
+        <p class="pl-4">}</p>
+        <p>}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN CONCEPTOS -->
+  <section id="conceptos" class="bg-csl-light border-t border-slate-300 py-20 px-8">
+    <div class="max-w-7xl mx-auto text-center">
+      <span class="text-xs font-bold tracking-wider text-csl-accent uppercase">Bloques del lenguaje</span>
+      <h2 class="text-4xl font-extrabold text-csl-dark mt-2 mb-4">Ocho conceptos, un ecosistema completo</h2>
+      <p class="text-slate-600 max-w-2xl mx-auto mb-12">
+        Cada palabra clave de CSL representa una pieza real del análisis de conflictos socioambientales.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+        <!-- Card 1 -->
+        <div class="bg-slate-200/60 p-6 rounded-xl border border-slate-300">
+          <h3 class="font-mono text-csl-accent font-bold mb-2">actor</h3>
+          <p class="text-sm text-slate-600">Una parte del conflicto: comunidad, empresa privada o entidad estatal, con su postura y poder.</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-slate-200/60 p-6 rounded-xl border border-slate-300">
+          <h3 class="font-mono text-csl-accent font-bold mb-2">escenario</h3>
+          <p class="text-sm text-slate-600">Agrupa a los actores que participan en una situación específica a simular.</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-slate-200/60 p-6 rounded-xl border border-slate-300">
+          <h3 class="font-mono text-csl-accent font-bold mb-2">negociacion</h3>
+          <p class="text-sm text-slate-600">Partes en diálogo y un umbral de acuerdo necesario para llegar a consenso.</p>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-slate-200/60 p-6 rounded-xl border border-slate-300">
+          <h3 class="font-mono text-csl-accent font-bold mb-2">coalicion</h3>
+          <p class="text-sm text-slate-600">Une a varios actores en un bloque con poder combinado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN PLAYGROUND / COMPILADOR -->
+  <section id="playground" class="bg-csl-dark text-white py-20 px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-xs font-bold tracking-wider text-csl-accent uppercase">Compilador en Vivo</span>
+        <h2 class="text-4xl font-extrabold mt-2 mb-4">Escribe CSL y compílalo aquí mismo</h2>
+        <p class="text-gray-300 max-w-3xl mx-auto text-sm leading-relaxed">
+          El playground ahora se conecta con la API de Node.js para ejecutar el analizador C++ de ConsensusLang sobre tu código.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        <div class="bg-[#0a1c1f] rounded-xl border border-csl-border flex flex-col justify-between overflow-hidden">
+          <div class="flex items-center justify-between bg-csl-card px-4 py-2 border-b border-csl-border text-xs">
+            <span class="font-mono text-gray-300">EDITOR - EJEMPLOS_DE_PRUEBA.CSL</span>
+            <select id="exampleSelect" class="bg-[#0a1c1f] border border-csl-border rounded px-2 py-1 text-xs text-gray-300 focus:outline-none">
+              <option value="posturas">Ejemplo 1 - Posturas Titicaca</option>
+              <option value="simple">Ejemplo 2 - Simulación simple</option>
+            </select>
+          </div>
+          <textarea id="editorCode" class="w-full h-80 bg-transparent p-4 font-mono text-xs text-teal-300 focus:outline-none resize-none" spellcheck="false"></textarea>
+          <div class="p-4 bg-csl-card border-t border-csl-border flex gap-4">
+            <button id="compileBtn" class="bg-csl-accent hover:bg-orange-700 text-white font-medium px-4 py-2 rounded text-xs flex items-center transition">
+              ▶ Compilar y simular
+            </button>
+            <button id="clearBtn" class="border border-csl-border text-gray-300 hover:bg-[#0a1c1f] px-4 py-2 rounded text-xs transition">
+              Limpiar salida
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-[#0a1c1f] rounded-xl border border-csl-border flex flex-col overflow-hidden">
+          <div class="flex bg-csl-card border-b border-csl-border text-xs">
+            <button class="px-4 py-2 bg-[#0a1c1f] text-white border-t-2 border-csl-accent font-medium">Resumen</button>
+          </div>
+          <div class="p-4 border-b border-csl-border bg-csl-card/60">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-[11px] uppercase tracking-[0.25em] text-csl-light">Estado de compilación</p>
+                <h3 id="compileTitle" class="text-sm font-semibold text-white mt-1">Esperando compilación</h3>
+              </div>
+              <span id="compileBadge" class="px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-600 text-slate-200">Pendiente</span>
+            </div>
+            <p id="compileSummary" class="mt-3 text-sm text-slate-300 leading-relaxed">
+              El resumen aparecerá aquí cuando ejecutes el compilador.
+            </p>
+            <ul id="summaryList" class="mt-3 space-y-2 text-xs text-slate-300"></ul>
+          </div>
+
+          <div class="m-4 rounded-lg border border-csl-border bg-[#081518] overflow-hidden">
+            <div class="flex items-center justify-between px-3 py-2 border-b border-csl-border bg-[#10262b]">
+              <span class="text-[11px] uppercase tracking-[0.2em] text-csl-light">Salida del compilador</span>
+              <span class="text-[10px] text-slate-400">scroll</span>
+            </div>
+            <div id="consoleOutput" class="h-64 overflow-y-auto p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap">
+              Presiona «Compilar y simular» para ejecutar el pipeline sobre el código del editor.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRAFICAS DE LA SIMULACION -->
+      <div id="graficasPanel" class="mt-6 hidden">
+        <h3 class="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-csl-accent"></span>
+          Gráficas de la simulación
+          <span id="graficasEscenario" class="text-xs font-normal text-csl-light"></span>
+        </h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="bg-[#0a1c1f] rounded-xl border border-csl-border p-4">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-csl-light mb-2">Evolución del conflicto</p>
+            <canvas id="chartConflicto" height="220"></canvas>
+          </div>
+          <div class="bg-[#0a1c1f] rounded-xl border border-csl-border p-4">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-csl-light mb-2">Postura y poder por actor</p>
+            <canvas id="chartActores" height="220"></canvas>
+          </div>
+          <div class="bg-[#0a1c1f] rounded-xl border border-csl-border p-4">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-csl-light mb-2">Red de relaciones (tensión)</p>
+            <canvas id="chartRed" width="320" height="220" class="w-full"></canvas>
+          </div>
+        </div>
+      </div>
+      <div id="graficasError" class="mt-6 hidden text-xs text-amber-300 bg-amber-900/20 border border-amber-700/40 rounded-lg p-3"></div>
+    </div>
+  </section>
+
+<script>
+    const examples = {
+      posturas: `escenario PosturasTiticaca {
+    actor ComunidadLago {
+        tipo = "COMUNIDAD";
+        postura = 90;
+        poder = 0.6;
+    }
+    actor EmpresaTuristica {
+        tipo = "PRIVADO";
+        postura = 20;
+        poder = 0.8;
+    }
+}
+simular Simulacion_01 {
+    escenario = PosturasTiticaca;
+    variable nivel_riesgo = 0;
+    calcular(nivel_riesgo, conflicto);
+    cuando (nivel_riesgo > 50) entonces {
+        alerta("Alto_Conflicto");
+    }
+}`,
+      simple: `variable nivel_conflicto = 0;
+escenario ConflictoSimple {
+    actor Comunidad {
+        tipo = "COMUNIDAD";
+        postura = 70;
+        poder = 0.5;
+    }
+}
+simular Demo {
+    escenario = ConflictoSimple;
+    cuando (nivel_conflicto > 30) entonces {
+        alerta("Conflicto alto");
+    }
+}`
+    };
+
+    const editor = document.getElementById('editorCode');
+    const output = document.getElementById('consoleOutput');
+    const exampleSelect = document.getElementById('exampleSelect');
+    const compileBtn = document.getElementById('compileBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const compileTitle = document.getElementById('compileTitle');
+    const compileBadge = document.getElementById('compileBadge');
+    const compileSummary = document.getElementById('compileSummary');
+    const summaryList = document.getElementById('summaryList');
+
+    function resetSummary() {
+      compileTitle.textContent = 'Esperando compilación';
+      compileSummary.textContent = 'El resumen aparecerá aquí cuando ejecutes el compilador.';
+      compileBadge.textContent = 'Pendiente';
+      compileBadge.className = 'px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-600 text-slate-200';
+      summaryList.innerHTML = '';
+    }
+
+    function renderSummary(data) {
+      const status = data?.status === 'success' ? 'success' : 'error';
+      const title = status === 'success' ? 'Compilado correctamente' : 'Compilación con errores';
+      const summaryText = data?.summary || (status === 'success'
+        ? 'El análisis terminó correctamente.'
+        : 'Revisa los mensajes del analizador.');
+      const details = Array.isArray(data?.details) ? data.details : [];
+
+      compileTitle.textContent = title;
+      compileSummary.textContent = summaryText;
+      compileBadge.textContent = status === 'success' ? 'Correcto' : 'Revisión';
+      compileBadge.className = `px-3 py-1 rounded-full text-[11px] font-semibold ${status === 'success' ? 'bg-emerald-600 text-white' : 'bg-amber-600 text-white'}`;
+
+      if (details.length) {
+        summaryList.innerHTML = details.map((item) => `
+          <li class="flex items-start gap-2">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full ${status === 'success' ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
+            <span>${item}</span>
+          </li>
+        `).join('');
+      } else {
+        summaryList.innerHTML = '<li class="text-slate-400">Sin detalles adicionales.</li>';
+      }
+    }
+
+    editor.value = examples.posturas;
+
+    exampleSelect.addEventListener('change', (event) => {
+      editor.value = examples[event.target.value] || examples.posturas;
+    });
+
+    clearBtn.addEventListener('click', () => {
+      output.textContent = 'Salida limpiada.';
+      resetSummary();
+      graficasPanel.classList.add('hidden');
+      graficasError.classList.add('hidden');
+    });
+
+    compileBtn.addEventListener('click', async () => {
+      const code = editor.value.trim();
+      output.textContent = 'Enviando código al analizador...';
+      renderSummary({ status: 'error', summary: 'Procesando...', details: ['Esperando respuesta del analizador...'] });
+
+      try {
+        // Petición a la API alojada en Render
+        const response = await fetch('/compile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          output.textContent = data.error || 'Error al ejecutar el analizador.';
+          renderSummary(data);
+          return;
+        }
+
+        output.textContent = data.output || 'Análisis completado sin salida.';
+        renderSummary(data);
+
+        if (data.status === 'success') {
+          await ejecutarSimulacion(code);
+        } else {
+          ocultarGraficas('Corrige los errores del analizador para ver las gráficas de la simulación.');
+        }
+      } catch (error) {
+        output.textContent = `No se pudo contactar con la API en Render.\nDetalle: ${error.message}`;
+        renderSummary({
+          status: 'error',
+          summary: 'No se pudo conectar con el servidor del compilador.',
+          details: [error.message]
+        });
+      }
+    });
+
+    resetSummary();
+
+    // ==========================================================
+    // GRAFICAS DE LA SIMULACION
+    // ==========================================================
+    const graficasPanel = document.getElementById('graficasPanel');
+    const graficasEscenario = document.getElementById('graficasEscenario');
+    const graficasError = document.getElementById('graficasError');
+
+    let chartConflicto = null;
+    let chartActores = null;
+
+    const coloresPorTipo = {
+      COMUNIDAD: '#34d399',
+      PRIVADO: '#f97316',
+      ESTATAL: '#60a5fa',
+      DESCONOCIDO: '#94a3b8'
+    };
+
+    function colorDeTipo(tipo) {
+      return coloresPorTipo[(tipo || '').toUpperCase()] || coloresPorTipo.DESCONOCIDO;
+    }
+
+    function ocultarGraficas(mensajeError) {
+      graficasPanel.classList.add('hidden');
+      if (mensajeError) {
+        graficasError.textContent = mensajeError;
+        graficasError.classList.remove('hidden');
+      } else {
+        graficasError.classList.add('hidden');
+      }
+    }
+
+    function renderChartConflicto(evolucion) {
+      const ctx = document.getElementById('chartConflicto');
+      if (chartConflicto) chartConflicto.destroy();
+      chartConflicto = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: evolucion.map(p => `Paso ${p.paso}`),
+          datasets: [{
+            label: 'Nivel de conflicto',
+            data: evolucion.map(p => p.conflicto),
+            borderColor: '#c25a2b',
+            backgroundColor: 'rgba(194, 90, 43, 0.15)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 10 } } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: '#2d535a' } },
+            y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: '#2d535a' } }
+          }
+        }
+      });
+    }
+
+    function renderChartActores(actores) {
+      const ctx = document.getElementById('chartActores');
+      if (chartActores) chartActores.destroy();
+      chartActores = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: actores.map(a => a.nombre),
+          datasets: [
+            {
+              label: 'Postura',
+              data: actores.map(a => a.postura),
+              backgroundColor: actores.map(a => colorDeTipo(a.tipo))
+            },
+            {
+              label: 'Poder (x100)',
+              data: actores.map(a => Math.round(a.poder * 100)),
+              backgroundColor: 'rgba(148, 163, 184, 0.5)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 10 } } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: '#2d535a' } },
+            y: { beginAtZero: true, max: 100, ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: '#2d535a' } }
+          }
+        }
+      });
+    }
+
+    // Red de relaciones: dibujada a mano en <canvas> (nodos en circulo,
+    // enlaces coloreados/gruesos segun la tension entre actores).
+    function renderChartRed(red) {
+      const canvas = document.getElementById('chartRed');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const cssWidth = canvas.clientWidth || 320;
+      const cssHeight = 220;
+      canvas.width = cssWidth * dpr;
+      canvas.height = cssHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+      const nodos = red.nodos;
+      const enlaces = red.enlaces;
+      const cx = cssWidth / 2;
+      const cy = cssHeight / 2;
+      const radio = Math.min(cssWidth, cssHeight) / 2 - 30;
+
+      const posiciones = nodos.map((n, i) => {
+        const angulo = (2 * Math.PI * i) / Math.max(nodos.length, 1) - Math.PI / 2;
+        return { x: cx + radio * Math.cos(angulo), y: cy + radio * Math.sin(angulo) };
+      });
+
+      // Enlaces: grosor y color segun tension (0 = afinidad, 1 = tension maxima)
+      enlaces.forEach(e => {
+        const a = posiciones[e.origen];
+        const b = posiciones[e.destino];
+        if (!a || !b) return;
+        const t = e.tension;
+        const r = Math.round(52 + t * (239 - 52));
+        const g = Math.round(211 - t * (211 - 68));
+        const bC = Math.round(153 - t * (153 - 68));
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${bC}, 0.85)`;
+        ctx.lineWidth = 1 + t * 3;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+
+        // Etiqueta de tension en el punto medio
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '9px monospace';
+        ctx.fillText(t.toFixed(2), (a.x + b.x) / 2, (a.y + b.y) / 2);
+      });
+
+      // Nodos
+      posiciones.forEach((p, i) => {
+        const nodo = nodos[i];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 16, 0, 2 * Math.PI);
+        ctx.fillStyle = colorDeTipo(nodo.tipo);
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#0a1c1f';
+        ctx.stroke();
+
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(nodo.nombre, p.x, p.y + 30);
+      });
+      ctx.textAlign = 'left';
+    }
+
+    async function ejecutarSimulacion(code) {
+      try {
+        const response = await fetch('/simulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        const data = await response.json();
+
+        if (!response.ok || data.status !== 'success') {
+          ocultarGraficas(data.error || 'No se pudo generar la simulación para graficar.');
+          return;
+        }
+
+        const { simulacion } = data;
+        graficasEscenario.textContent = `· escenario "${simulacion.escenario}"`;
+        graficasPanel.classList.remove('hidden');
+        graficasError.classList.add('hidden');
+
+        renderChartConflicto(simulacion.evolucionConflicto);
+        renderChartActores(simulacion.actores);
+        renderChartRed(simulacion.red);
+      } catch (error) {
+        ocultarGraficas(`No se pudo generar la simulación: ${error.message}`);
+      }
+    }
+  </script>
+
+  <!-- SECCIÓN EQUIPO -->
+  <section id="equipo" class="bg-csl-dark text-white py-20 px-8 border-t border-csl-border">
+    <div class="max-w-7xl mx-auto text-center">
+      <span class="text-xs font-bold tracking-wider text-csl-accent uppercase">Proyecto de Compiladores</span>
+      <h2 class="text-4xl font-extrabold mt-2 mb-12">El equipo detrás de ConsensusLang</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Miembro 1 -->
+        <div class="bg-csl-card p-8 rounded-xl border border-csl-border flex flex-col items-center">
+          <div class="w-16 h-16 rounded-full bg-csl-accent flex items-center justify-center font-bold text-lg mb-4">JL</div>
+          <h3 class="font-bold text-sm text-center">Jorge Luis Anco Coaquira</h3>
+        </div>
+        <!-- Miembro 2 -->
+        <div class="bg-csl-card p-8 rounded-xl border border-csl-border flex flex-col items-center">
+          <div class="w-16 h-16 rounded-full bg-csl-accent flex items-center justify-center font-bold text-lg mb-4">MS</div>
+          <h3 class="font-bold text-sm text-center">Mario Saul Delgado Jimenez</h3>
+        </div>
+        <!-- Miembro 3 -->
+        <div class="bg-csl-card p-8 rounded-xl border border-csl-border flex flex-col items-center">
+          <div class="w-16 h-16 rounded-full bg-csl-accent flex items-center justify-center font-bold text-lg mb-4">GA</div>
+          <h3 class="font-bold text-sm text-center">Giamarco Alain Bruno Machaca Cahuana</h3>
+        </div>
+        <!-- Miembro 4 -->
+        <div class="bg-csl-card p-8 rounded-xl border border-csl-border flex flex-col items-center">
+          <div class="w-16 h-16 rounded-full bg-csl-accent flex items-center justify-center font-bold text-lg mb-4">DJ</div>
+          <h3 class="font-bold text-sm text-center">Dario Jose Arela Apaza</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALL TO ACTION / FOOTER -->
+  <section class="bg-csl-light py-20 px-8 text-center border-t border-slate-300">
+    <h2 class="text-3xl font-extrabold text-csl-dark mb-6">Prueba ConsensusLang con tus propios escenarios</h2>
+    <a href="#playground" class="bg-csl-accent hover:bg-orange-700 text-white font-medium px-6 py-3 rounded-lg transition inline-block">
+      Ir al playground &rarr;
+    </a>
+  </section>
+
+</body>
+</html>
